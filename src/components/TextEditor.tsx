@@ -16,9 +16,20 @@ const TextEditor: React.FC = () => {
   const [selectedText, setSelectedText] = useState<string>('');
   const [buttonPosition, setButtonPosition] = useState<{ x: number; y: number }>({ x: 20, y: 20 });
   const [menuPosition, setMenuPosition] = useState<{ x: number; y: number } | null>(null);
-  const [showButton, setShowButton] = useState<boolean>(true); // Always show the button
+  const [showButton, setShowButton] = useState<boolean>(true);
   const [actionOptions, setActionOptions] = useState<string[]>([]);
   const editorRef = useRef<HTMLDivElement>(null);
+
+  // Position button at bottom right of editor initially and when no text is selected
+  const positionButtonAtBottomRight = useCallback(() => {
+    if (editorRef.current) {
+      const editorRect = editorRef.current.getBoundingClientRect();
+      setButtonPosition({
+        x: editorRect.right - 20,
+        y: editorRect.bottom - 20
+      });
+    }
+  }, []);
 
   // Handle text selection
   const handleSelection = useCallback(() => {
@@ -26,24 +37,22 @@ const TextEditor: React.FC = () => {
     setSelectedText(selected);
     
     if (selected) {
+      // When text is selected, position button at the end of selection
       const position = getSelectionPosition();
       if (position) {
         setButtonPosition(position);
       }
       setActionOptions(generateActionOptions(selected));
+    } else {
+      // When no text is selected, reposition to bottom right
+      positionButtonAtBottomRight();
     }
-  }, []);
+  }, [positionButtonAtBottomRight]);
 
-  // Update button position to bottom right of editor
+  // Initial positioning and repositioning when editor changes
   useEffect(() => {
-    if (editorRef.current && showButton) {
-      const editorRect = editorRef.current.getBoundingClientRect();
-      setButtonPosition({
-        x: editorRect.right - 20,
-        y: editorRect.bottom - 20
-      });
-    }
-  }, [showButton, text]);
+    positionButtonAtBottomRight();
+  }, [positionButtonAtBottomRight, text]);
 
   // Handle button click
   const handleButtonClick = () => {
@@ -58,13 +67,13 @@ const TextEditor: React.FC = () => {
   // Set up selection event listeners
   useEffect(() => {
     document.addEventListener('selectionchange', handleSelection);
-    window.addEventListener('resize', handleSelection);
+    window.addEventListener('resize', positionButtonAtBottomRight);
     
     return () => {
       document.removeEventListener('selectionchange', handleSelection);
-      window.removeEventListener('resize', handleSelection);
+      window.removeEventListener('resize', positionButtonAtBottomRight);
     };
-  }, [handleSelection]);
+  }, [handleSelection, positionButtonAtBottomRight]);
 
   return (
     <div className="relative w-full">
