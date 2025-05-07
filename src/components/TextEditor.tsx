@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import AIFloatingButton from './AIFloatingButton';
 import AIContextMenu from './AIContextMenu';
@@ -18,6 +18,7 @@ const TextEditor: React.FC = () => {
   const [menuPosition, setMenuPosition] = useState<{ x: number; y: number } | null>(null);
   const [showButton, setShowButton] = useState<boolean>(true); // Always show the button
   const [actionOptions, setActionOptions] = useState<string[]>([]);
+  const editorRef = useRef<HTMLDivElement>(null);
 
   // Handle text selection
   const handleSelection = useCallback(() => {
@@ -32,6 +33,17 @@ const TextEditor: React.FC = () => {
       setActionOptions(generateActionOptions(selected));
     }
   }, []);
+
+  // Update button position to bottom right of editor
+  useEffect(() => {
+    if (editorRef.current && showButton) {
+      const editorRect = editorRef.current.getBoundingClientRect();
+      setButtonPosition({
+        x: editorRect.right - 20,
+        y: editorRect.bottom - 20
+      });
+    }
+  }, [showButton, text]);
 
   // Handle button click
   const handleButtonClick = () => {
@@ -59,6 +71,7 @@ const TextEditor: React.FC = () => {
       <Card className="w-full shadow-md">
         <CardContent className="p-6">
           <div 
+            ref={editorRef}
             className="min-h-[300px] p-4 border rounded-md focus-within:ring-2 focus-within:ring-ai-primary/40 focus-within:border-ai-primary/40"
             contentEditable
             suppressContentEditableWarning
@@ -72,6 +85,7 @@ const TextEditor: React.FC = () => {
         position={buttonPosition}
         onClick={handleButtonClick}
         isVisible={showButton}
+        className="fixed-bottom-right"
       />
       
       {menuPosition && (

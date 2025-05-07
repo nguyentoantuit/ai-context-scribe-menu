@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { MessageSquare } from 'lucide-react';
+import { BotMessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface AIFloatingButtonProps {
@@ -30,14 +30,14 @@ const AIFloatingButton: React.FC<AIFloatingButtonProps> = ({
         className
       )}
       style={{
-        left: `${adjustedX + 10}px`,
-        top: `${adjustedY + 10}px`,
+        left: `${adjustedX}px`,
+        top: `${adjustedY}px`,
         transform: 'translate(-50%, -50%)',
       }}
       onClick={onClick}
       aria-label="AI Assistant"
     >
-      <MessageSquare className="w-4 h-4 text-white ai-pulse" />
+      <BotMessageSquare className="w-4 h-4 text-white ai-pulse" />
     </button>
   );
 };
