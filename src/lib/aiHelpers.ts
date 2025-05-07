@@ -55,10 +55,11 @@ export function getSelectionPosition(): { x: number; y: number } | null {
   const range = selection.getRangeAt(0);
   const rect = range.getBoundingClientRect();
   
-  // Position the button at the end of the selection
+  // Position the button at the end of the selection with some spacing
+  // Add horizontal and vertical offset to prevent overlapping with text
   return {
-    x: rect.right,
-    y: rect.bottom,
+    x: rect.right + 10, // Add 10px horizontal spacing
+    y: rect.bottom + 10 // Add 10px vertical spacing
   };
 }
 
