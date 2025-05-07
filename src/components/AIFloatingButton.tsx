@@ -4,7 +4,7 @@ import { MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface AIFloatingButtonProps {
-  position: { x: number; y: number } | null;
+  position: { x: number; y: number };
   onClick: () => void;
   className?: string;
   isVisible: boolean;
@@ -16,7 +16,7 @@ const AIFloatingButton: React.FC<AIFloatingButtonProps> = ({
   className,
   isVisible
 }) => {
-  if (!position || !isVisible) return null;
+  if (!isVisible) return null;
   
   // Adjust position to account for scroll
   const adjustedX = position.x + window.scrollX;

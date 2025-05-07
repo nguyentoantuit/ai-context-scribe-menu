@@ -14,9 +14,9 @@ const TextEditor: React.FC = () => {
     "Welcome to the AI-powered text editor! Try selecting some text to see the AI assistant button appear.\n\nHere are some examples you can try:\n\n1. Select this text and use the AI assistant to generate a response.\n\n2. Hello AI, can you help me understand how this works?\n\n3. Summarize this paragraph for a quick overview."
   );
   const [selectedText, setSelectedText] = useState<string>('');
-  const [buttonPosition, setButtonPosition] = useState<{ x: number; y: number } | null>(null);
+  const [buttonPosition, setButtonPosition] = useState<{ x: number; y: number }>({ x: 20, y: 20 });
   const [menuPosition, setMenuPosition] = useState<{ x: number; y: number } | null>(null);
-  const [showButton, setShowButton] = useState<boolean>(false);
+  const [showButton, setShowButton] = useState<boolean>(true); // Always show the button
   const [actionOptions, setActionOptions] = useState<string[]>([]);
 
   // Handle text selection
@@ -26,18 +26,16 @@ const TextEditor: React.FC = () => {
     
     if (selected) {
       const position = getSelectionPosition();
-      setButtonPosition(position);
-      setShowButton(!!position);
+      if (position) {
+        setButtonPosition(position);
+      }
       setActionOptions(generateActionOptions(selected));
-    } else {
-      setShowButton(false);
     }
   }, []);
 
   // Handle button click
   const handleButtonClick = () => {
     setMenuPosition(buttonPosition);
-    setShowButton(false);
   };
 
   // Handle closing the menu
